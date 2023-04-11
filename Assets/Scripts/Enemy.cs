@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] int enemyAtackPower = 1; 
     [SerializeField] bool playerInmune = false;
 
+    [SerializeField] int scorePoints = 100;
+
     private void Start() {
         player = FindObjectOfType<Player>().transform;
         GameObject[] spawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
@@ -25,6 +27,7 @@ public class Enemy : MonoBehaviour
     public void TakeDamage () {
         health--;
         if(health <= 0 ){
+            GameManager.Instance.Score += scorePoints;
             Destroy(gameObject);
         }
     }
@@ -35,6 +38,7 @@ public class Enemy : MonoBehaviour
     //     }
     // }
 
+    // enemy damage when stay 
     private void OnTriggerStay2D(Collider2D other) {
         if(other.CompareTag("Player") && !playerInmune){
             other.GetComponent<Player>().TakeDamage(enemyAtackPower);
