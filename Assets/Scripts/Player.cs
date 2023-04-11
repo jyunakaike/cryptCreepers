@@ -27,9 +27,11 @@ public class Player : MonoBehaviour
     [SerializeField]Transform bulletPrefab;
     bool gunLoaded = true;
     [SerializeField]float fireRate = 1; 
+    [SerializeField] bool powerShotEnabled = false;
 
     // player health
     [SerializeField] int PlayerHealth = 5;
+
 
     void Start(){
     } 
@@ -80,7 +82,10 @@ public class Player : MonoBehaviour
             gunLoaded = false;
             float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
             Quaternion targetRotation =  Quaternion.AngleAxis(angle, Vector3.forward);
-            Instantiate(bulletPrefab, transform.position, targetRotation); 
+            Transform bulletClone =  Instantiate(bulletPrefab, transform.position, targetRotation); 
+            if(powerShotEnabled){
+                bulletClone.GetComponent<Bullet>().powershot = true;
+            }
             StartCoroutine(ReloadGun());
             // ReloadGun();
         }
@@ -119,6 +124,24 @@ public class Player : MonoBehaviour
         if(PlayerHealth <= 0 ){
             // GameOver
             gameObject.SetActive(false);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.CompareTag("PowerUp"))
+        {
+            switch (other.GetComponent<PowerUp>().powerupType)
+            {
+                case PowerUp.PowerUpType.FireRateIncrease:
+                    //incrementar cardencia de disparo
+                    fireRate++;
+                    break;
+                case PowerUp.PowerUpType.PowerShot:
+                    //activar el powershot
+                    powerShotEnabled = true;
+                    break;
+            }
+            Destroy(other.gameObject, 0.1f);
         }
     }
 }
