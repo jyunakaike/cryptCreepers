@@ -36,9 +36,14 @@ public class Player : MonoBehaviour
     // player health
     [SerializeField] int health = 5;
 
-    public int Health{
+    [SerializeField] Animator anim;
+    [SerializeField] SpriteRenderer spriteRenderer;
+
+    public int Health
+    {
         get => health;
-        set{
+        set
+        {
             health = value;
             UIManager.Instance.UpdateUIHealth(health);
         }
@@ -115,6 +120,16 @@ public class Player : MonoBehaviour
             }
             StartCoroutine(ReloadGun());
             // ReloadGun();
+        }
+
+        anim.SetFloat("Speed", moveDirection.magnitude);
+        if (aim.position.x > transform.position.x)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (aim.position.x < transform.position.x)
+        {
+            spriteRenderer.flipX = false;
         }
     }
     IEnumerator ReloadGun()
