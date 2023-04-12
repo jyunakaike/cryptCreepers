@@ -34,8 +34,15 @@ public class Player : MonoBehaviour
     [SerializeField] bool powerShotEnabled = false;
 
     // player health
-    [SerializeField] int PlayerHealth = 5;
+    [SerializeField] int health = 5;
 
+    public int Health{
+        get => health;
+        set{
+            health = value;
+            UIManager.Instance.UpdateUIHealth(health);
+        }
+    }
 
     void Start()
     {
@@ -123,9 +130,9 @@ public class Player : MonoBehaviour
 
     // player health
 
-    // public void TakeDamage(){
-    //     PlayerHealth--;
-    //     if(PlayerHealth <= 0 ){
+    // public void TakeDamage(int enemyAtackPower){
+    //     health--;
+    //     if(health <= 0 ){
     //         // GameOver
     //         gameObject.SetActive(false);
     //     }
@@ -142,11 +149,13 @@ public class Player : MonoBehaviour
     // inmunity and constantDamage
     public void TakeDamage(int enemyAtackPower)
     {
-        PlayerHealth = PlayerHealth - (1 * enemyAtackPower);
-        if (PlayerHealth <= 0)
+        Health = Health - (1 * enemyAtackPower);
+        if (Health <= 0)
         {
             // GameOver
-            gameObject.SetActive(false);
+            GameManager.Instance.GameOver = true;
+            UIManager.Instance.showGameOverScreen();
+            // gameObject.SetActive(false);
         }
     }
 
